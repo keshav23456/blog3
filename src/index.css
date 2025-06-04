@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=Roboto:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Open Sans", system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-gray-50;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200 font-medium;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-2.5 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-soft hover:shadow-medium transition-shadow duration-200;
+  }
+}
+
+/* TinyMCE Custom Styles */
+.tox-tinymce {
+  border-radius: 0.5rem !important;
+  border-color: #e5e7eb !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+.tox .tox-toolbar__primary {
+  background: none !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.tox .tox-edit-area__iframe {
+  background: #ffffff !important;
+}
+
+.tox .tox-statusbar {
+  border-top: 1px solid #e5e7eb !important;
+}
+
+/* Post Content Styles */
+.post-content {
+  @apply prose max-w-none;
+}
+
+.post-content img {
+  @apply rounded-lg shadow-soft;
+}
+
+.post-content blockquote {
+  @apply border-l-4 border-primary-500 pl-4 italic;
+}
