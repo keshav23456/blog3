@@ -12,4 +12,18 @@ export default defineConfig({
   define: {
     "process.env": process.env
   },
+  build: {
+    // Stable chunk names to prevent cache issues
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          redux: ['@reduxjs/toolkit', 'react-redux'],
+          ui: ['lucide-react', '@radix-ui/react-slot', '@radix-ui/react-switch'],
+        },
+      },
+    },
+    // Better cache control
+    chunkSizeWarningLimit: 1000,
+  },
 })
