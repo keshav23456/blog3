@@ -57,20 +57,81 @@ function App() {
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
 
+  // FORCE LTR DIRECTION - Override any browser/system RTL settings
   useEffect(() => {
-    authService.getCurrentUser()
-      .then((userData) => {
+    const forceLTR = () => {
+      // Force on document
+      document.documentElement.setAttribute('dir', 'ltr');
+      document.documentElement.style.direction = 'ltr';
+      document.body.setAttribute('dir', 'ltr');
+      document.body.style.direction = 'ltr';
+      
+      // Force on all existing inputs, textareas, and selects
+      const elements = document.querySelectorAll('input, textarea, select');
+      elements.forEach(el => {
+        el.setAttribute('dir', 'ltr');
+        el.style.direction = 'ltr';
+        el.style.textAlign = 'left';
+        el.style.unicodeBidi = 'normal';
+      });
+    };
+
+    // Force immediately
+    forceLTR();
+
+    // Force again after a short delay (for dynamically loaded content)
+    const timeout1 = setTimeout(forceLTR, 100);
+    const timeout2 = setTimeout(forceLTR, 500);
+    const timeout3 = setTimeout(forceLTR, 1000);
+
+    // Set up a MutationObserver to force LTR on any new elements
+    const observer = new MutationObserver(forceLTR);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    return () => {
+      clearTimeout(timeout1);
+      clearTimeout(timeout2);
+      clearTimeout(timeout3);
+      observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const userData = await authService.getCurrentUser();
         if (userData) {
-          dispatch(login({ userData }));
+          const userRole = await authService.getUserRole();
+          dispatch(login({ userData, userRole }));
+          
+          // Setup session refresh (every 30 minutes)
+          const refreshInterval = setInterval(async () => {
+            try {
+              await authService.refreshSession();
+            } catch (error) {
+              console.error("Session refresh failed:", error);
+              // If refresh fails, user might be logged out
+              dispatch(logout());
+            }
+          }, 30 * 60 * 1000); // 30 minutes
+
+          return () => clearInterval(refreshInterval);
         } else {
           dispatch(logout());
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         setError("Failed to check authentication status");
         console.error("Auth check error:", err);
-      })
-      .finally(() => setLoading(false));
+        dispatch(logout());
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
   }, [dispatch]);
 
   if (loading) {

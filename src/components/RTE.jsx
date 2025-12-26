@@ -2,22 +2,22 @@ import React from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Controller } from "react-hook-form";
 
-export default function RTE({ name, control, label, defaultValue = "" }) {
+export default function RTE({ name, control, label, defaultValue = "", onSelectionChange }) {
   return (
-    <div className="w-full space-y-2">
+    <div className="w-full space-y-2" dir="ltr" style={{ direction: 'ltr', textAlign: 'left' }}>
       {label && (
         <label className="block text-sm font-medium text-gray-700 mb-1">
           {label}
         </label>
       )}
 
-      <div className="relative rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors duration-200">
+      <div className="relative rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors duration-200" dir="ltr" style={{ direction: 'ltr' }}>
         <Controller
           name={name || "content"}
           control={control}
-          render={({ field: { onChange } }) => (
+          render={({ field: { onChange, value } }) => (
             <Editor
-              initialValue={defaultValue}
+              value={value || defaultValue}
               apiKey="qao5sgbszpb9mp752c40eyocl8w3jkime0fndo083rlziqze"
               init={{
                 height: 500,
@@ -25,6 +25,8 @@ export default function RTE({ name, control, label, defaultValue = "" }) {
                 readonly: false,
                 skin: "oxide",
                 content_css: "default",
+                directionality: "ltr",
+                language: "en",
                 plugins: [
                   "advlist", "autolink", "lists", "link", "image", "charmap", "preview",
                   "anchor", "searchreplace", "visualblocks", "code", "fullscreen",
@@ -41,6 +43,16 @@ export default function RTE({ name, control, label, defaultValue = "" }) {
                     line-height: 1.6;
                     color: #374151;
                     margin: 1rem;
+                    direction: ltr !important;
+                    text-align: left !important;
+                  }
+                  * {
+                    direction: ltr !important;
+                    unicode-bidi: normal !important;
+                  }
+                  p, h1, h2, h3, h4, h5, h6, div, span, li, td, th {
+                    direction: ltr !important;
+                    text-align: left !important;
                   }
                   h1, h2, h3, h4, h5, h6 {
                     font-weight: 600;
@@ -67,7 +79,43 @@ export default function RTE({ name, control, label, defaultValue = "" }) {
                 setup: (editor) => {
                   editor.on('init', () => {
                     editor.getContainer().style.transition = "border-color 0.2s ease-in-out";
+                    
+                    // Force LTR on initialization
+                    const body = editor.getBody();
+                    if (body) {
+                      body.setAttribute('dir', 'ltr');
+                      body.style.direction = 'ltr';
+                      body.style.textAlign = 'left';
+                    }
                   });
+                  
+                  // Continuously enforce LTR
+                  editor.on('NodeChange', () => {
+                    const body = editor.getBody();
+                    if (body) {
+                      body.setAttribute('dir', 'ltr');
+                      body.style.direction = 'ltr';
+                    }
+                  });
+                  
+                  // Capture text selection for AI features
+                  if (onSelectionChange) {
+                    editor.on('NodeChange', () => {
+                      const selectedText = editor.selection.getContent({ format: 'text' });
+                      if (selectedText && selectedText.trim().length > 0) {
+                        onSelectionChange(selectedText.trim());
+                      }
+                    });
+                    
+                    editor.on('SelectionChange', () => {
+                      const selectedText = editor.selection.getContent({ format: 'text' });
+                      if (selectedText && selectedText.trim().length > 0) {
+                        onSelectionChange(selectedText.trim());
+                      } else {
+                        onSelectionChange('');
+                      }
+                    });
+                  }
                 },
                 image_title: true,
                 automatic_uploads: true,
@@ -78,21 +126,6 @@ export default function RTE({ name, control, label, defaultValue = "" }) {
                 link_context_toolbar: true,
                 link_default_target: '_blank',
                 link_assume_external_targets: true,
-                table_default_styles: {
-                  width: '100%'
-                },
-                table_responsive_width: true,
-                table_default_attributes: {
-                  border: '1'
-                },
-                style_formats: [
-                  { title: 'Paragraph', format: 'p' },
-                  { title: 'Heading 1', format: 'h1' },
-                  { title: 'Heading 2', format: 'h2' },
-                  { title: 'Heading 3', format: 'h3' },
-                  { title: 'Quote', format: 'blockquote' },
-                  { title: 'Code', format: 'code' }
-                ]
               }}
               onEditorChange={onChange}
             />

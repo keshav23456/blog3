@@ -103,7 +103,7 @@ import React, { useState } from "react";
 import AuthService from "../appwrite/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../store/authSlice";
-import { Button, Input, Logo } from "./index.js";
+import { Button, Input, Logo, OAuthButton } from "./index.js";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 
@@ -120,14 +120,62 @@ function Signup() {
     try {
       const userData = await AuthService.createAccount(data);
       if (userData) {
+        // Set new users as 'author' by default
+        try {
+          await AuthService.setUserRole('author');
+          console.log("New user role set to 'author'");
+        } catch (roleError) {
+          console.error("Failed to set user role:", roleError);
+        }
+        
+        // Send verification email
+        try {
+          await AuthService.sendVerificationEmail();
+        } catch (verifyError) {
+          console.log("Failed to send verification email:", verifyError);
+        }
+        
         const currentUser = await AuthService.getCurrentUser();
-        if (currentUser) dispatch(login(currentUser));
+        if (currentUser) {
+          const userRole = await AuthService.getUserRole();
+          dispatch(login({ userData: currentUser, userRole }));
+        }
         navigate("/");
       }
     } catch (error) {
       setError(error.message);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    try {
+      setError("");
+      await AuthService.loginWithGoogle();
+      // OAuth will redirect, so no need to handle response here
+    } catch (error) {
+      setError("Google signup failed. Please try again.");
+    }
+  };
+
+  const handleGithubSignup = async () => {
+    try {
+      setError("");
+      await AuthService.loginWithGithub();
+      // OAuth will redirect, so no need to handle response here
+    } catch (error) {
+      setError("GitHub signup failed. Please try again.");
+    }
+  };
+
+  const handleLinkedInSignup = async () => {
+    try {
+      setError("");
+      await AuthService.loginWithLinkedIn();
+      // OAuth will redirect, so no need to handle response here
+    } catch (error) {
+      setError("LinkedIn signup failed. Please try again.");
     }
   };
 
@@ -146,7 +194,7 @@ function Signup() {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+                className="font-medium text-purple-600 hover:text-purple-500 transition-colors"
               >
                 Sign in
               </Link>
@@ -158,6 +206,35 @@ function Signup() {
               {error}
             </div>
           )}
+
+          {/* OAuth Buttons */}
+          <div className="space-y-3 mb-6">
+            <OAuthButton 
+              provider="google" 
+              onClick={handleGoogleSignup}
+              disabled={isLoading}
+            />
+            <OAuthButton 
+              provider="github" 
+              onClick={handleGithubSignup}
+              disabled={isLoading}
+            />
+            <OAuthButton 
+              provider="linkedin" 
+              onClick={handleLinkedInSignup}
+              disabled={isLoading}
+            />
+          </div>
+
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-white text-gray-500">Or sign up with email</span>
+            </div>
+          </div>
 
           <form onSubmit={handleSubmit(create)} className="space-y-5">
             <Input

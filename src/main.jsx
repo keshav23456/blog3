@@ -202,6 +202,7 @@ import { Provider } from "react-redux";
 import store from "./store/store.js";
 import { RouterProvider, createBrowserRouter, Link } from "react-router-dom";
 import React from "react";
+import { ThemeProvider } from "./contexts/ThemeContext.jsx";
 
 // Lazy-loaded pages for better performance
 const Home = React.lazy(() => import("./pages/Home.jsx"));
@@ -211,6 +212,11 @@ const AllPost = React.lazy(() => import("./pages/AllPost.jsx"));
 const AddPost = React.lazy(() => import("./pages/AddPost.jsx"));
 const EditPost = React.lazy(() => import("./pages/EditPost.jsx"));
 const Post = React.lazy(() => import("./pages/Post.jsx"));
+const ForgotPassword = React.lazy(() => import("./pages/ForgotPassword.jsx"));
+const ResetPassword = React.lazy(() => import("./pages/ResetPassword.jsx"));
+const VerifyEmail = React.lazy(() => import("./pages/VerifyEmail.jsx"));
+const AuthorDashboard = React.lazy(() => import("./pages/AuthorDashboard.jsx"));
+const AdminDashboard = React.lazy(() => import("./pages/AdminDashboard.jsx"));
 
 const router = createBrowserRouter([
   {
@@ -238,6 +244,30 @@ const router = createBrowserRouter([
         element: (
           <React.Suspense fallback={<div className="flex justify-center items-center h-screen">Loading Signup...</div>}>
             <Signup />
+          </React.Suspense>
+        ),
+      },
+      {
+        path: "forgot-password",
+        element: (
+          <React.Suspense fallback={<div className="flex justify-center items-center h-screen">Loading...</div>}>
+            <ForgotPassword />
+          </React.Suspense>
+        ),
+      },
+      {
+        path: "reset-password",
+        element: (
+          <React.Suspense fallback={<div className="flex justify-center items-center h-screen">Loading...</div>}>
+            <ResetPassword />
+          </React.Suspense>
+        ),
+      },
+      {
+        path: "verify-email",
+        element: (
+          <React.Suspense fallback={<div className="flex justify-center items-center h-screen">Loading...</div>}>
+            <VerifyEmail />
           </React.Suspense>
         ),
       },
@@ -274,6 +304,22 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "dashboard/author",
+        element: (
+          <React.Suspense fallback={<div className="flex justify-center items-center h-screen">Loading Dashboard...</div>}>
+            <AuthorDashboard />
+          </React.Suspense>
+        ),
+      },
+      {
+        path: "dashboard/admin",
+        element: (
+          <React.Suspense fallback={<div className="flex justify-center items-center h-screen">Loading Dashboard...</div>}>
+            <AdminDashboard />
+          </React.Suspense>
+        ),
+      },
+      {
         path: "*",
         element: (
           <div className="flex flex-col items-center justify-center h-screen">
@@ -292,7 +338,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>
 );

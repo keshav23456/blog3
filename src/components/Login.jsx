@@ -102,7 +102,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login as authLogin } from "../store/authSlice";
-import { Button, Input, Logo } from "./index";
+import { Button, Input, Logo, OAuthButton } from "./index";
 import { useDispatch } from "react-redux";
 import AuthService from "../appwrite/auth";
 import { useForm } from "react-hook-form";
@@ -130,13 +130,44 @@ function Login() {
 
       const userData = await AuthService.getCurrentUser();
       if (userData) {
-        dispatch(authLogin(userData));
+        const userRole = await AuthService.getUserRole();
+        dispatch(authLogin({ userData, userRole }));
         navigate("/");
       }
     } catch (error) {
       setError(error.message || "Login failed. Please try again.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      setError("");
+      await AuthService.loginWithGoogle();
+      // OAuth will redirect, so no need to handle response here
+    } catch (error) {
+      setError("Google login failed. Please try again.");
+    }
+  };
+
+  const handleGithubLogin = async () => {
+    try {
+      setError("");
+      await AuthService.loginWithGithub();
+      // OAuth will redirect, so no need to handle response here
+    } catch (error) {
+      setError("GitHub login failed. Please try again.");
+    }
+  };
+
+  const handleLinkedInLogin = async () => {
+    try {
+      setError("");
+      await AuthService.loginWithLinkedIn();
+      // OAuth will redirect, so no need to handle response here
+    } catch (error) {
+      setError("LinkedIn login failed. Please try again.");
     }
   };
 
@@ -154,7 +185,7 @@ function Login() {
             Don't have an account?{" "}
             <Link
               to="/signup"
-              className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+              className="font-medium text-purple-600 hover:text-purple-500 transition-colors"
             >
               Sign up
             </Link>
@@ -166,6 +197,35 @@ function Login() {
             {error}
           </div>
         )}
+
+        {/* OAuth Buttons */}
+        <div className="space-y-3 mb-6">
+          <OAuthButton 
+            provider="google" 
+            onClick={handleGoogleLogin}
+            disabled={isLoading}
+          />
+          <OAuthButton 
+            provider="github" 
+            onClick={handleGithubLogin}
+            disabled={isLoading}
+          />
+          <OAuthButton 
+            provider="linkedin" 
+            onClick={handleLinkedInLogin}
+            disabled={isLoading}
+          />
+        </div>
+
+        {/* Divider */}
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-4 bg-white text-gray-500">Or continue with email</span>
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit(login)} className="space-y-5">
           <Input
@@ -202,14 +262,14 @@ function Login() {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
               />
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-600">
                 Remember me
               </label>
             </div>
 
-            <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-500">
+            <Link to="/forgot-password" className="text-sm text-purple-600 hover:text-purple-500">
               Forgot password?
             </Link>
           </div>

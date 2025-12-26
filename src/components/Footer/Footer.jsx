@@ -149,89 +149,33 @@ import Logo from "../Logo";
 
 function Footer() {
   return (
-    <footer className="bg-gradient-to-br from-gray-800 to-gray-900 text-gray-300 border-t border-gray-700">
-      <div className="mx-auto max-w-7xl px-6 py-12 md:py-16">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
-          {/* Logo and Copyright */}
-          <div className="space-y-6">
-            <div className="flex items-center">
-              <Logo width="100px" className="text-white" />
-            </div>
-            <p className="text-sm text-gray-400">
-              &copy; {new Date().getFullYear()} DevUI. All Rights Reserved.
-            </p>
-            <div className="flex space-x-4">
-              {['twitter', 'facebook', 'instagram', 'linkedin'].map((social) => (
-                <a key={social} href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <span className="sr-only">{social}</span>
-                  <i className={`fab fa-${social} text-xl`}></i>
-                </a>
-              ))}
-            </div>
+    <footer className="border-t border-border bg-background">
+      <div className="mx-auto max-w-7xl px-6 py-16 md:py-20">
+        {/* Simple Footer Content */}
+        <div className="flex flex-col items-center justify-between gap-8 md:flex-row md:items-start">
+          {/* Logo */}
+          <div>
+            <Logo size="default" />
           </div>
 
-          {/* Company Links */}
-          <div className="space-y-4">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
-              Company
-            </h3>
-            <ul className="space-y-3">
-              {['Features', 'Pricing', 'Affiliate Program', 'Press Kit'].map((item) => (
-                <li key={item}>
-                  <Link
-                    to="/"
-                    className="text-base text-gray-400 hover:text-white transition-colors"
-                  >
-                    {item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Support Links */}
-          <div className="space-y-4">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
-              Support
-            </h3>
-            <ul className="space-y-3">
-              {['Account', 'Help', 'Contact Us', 'Customer Support'].map((item) => (
-                <li key={item}>
-                  <Link
-                    to="/"
-                    className="text-base text-gray-400 hover:text-white transition-colors"
-                  >
-                    {item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Legal Links */}
-          <div className="space-y-4">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
-              Legals
-            </h3>
-            <ul className="space-y-3">
-              {['Terms & Conditions', 'Privacy Policy', 'Licensing'].map((item) => (
-                <li key={item}>
-                  <Link
-                    to="/"
-                    className="text-base text-gray-400 hover:text-white transition-colors"
-                  >
-                    {item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          {/* Links - Simple & Clean */}
+          <div className="flex flex-wrap gap-x-8 gap-y-4 text-center md:text-left">
+            {['About', 'Contact', 'Privacy', 'Terms'].map((item) => (
+              <Link
+                key={item}
+                to="/"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {item}
+              </Link>
+            ))}
           </div>
         </div>
 
-        {/* Divider and Additional Info */}
-        <div className="mt-12 border-t border-gray-700 pt-8">
-          <p className="text-xs text-gray-400 text-center">
-            Made with ❤️ for the developer community
+        {/* Copyright - Minimal */}
+        <div className="mt-12 pt-8 border-t border-border">
+          <p className="text-sm text-muted-foreground text-center">
+            © {new Date().getFullYear()} Apogee. All rights reserved.
           </p>
         </div>
       </div>

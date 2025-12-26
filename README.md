@@ -287,6 +287,16 @@ After deployment, update OAuth redirect URLs in Appwrite:
 - Success: `https://your-domain.vercel.app/`
 - Failure: `https://your-domain.vercel.app/login`
 
+#### Deployment Checklist
+
+- [ ] All environment variables added to Vercel
+- [ ] Appwrite OAuth redirects updated with production URL
+- [ ] Appwrite CORS settings include production domain
+- [ ] Test authentication flow
+- [ ] Test post creation/editing
+- [ ] Verify AI features (if enabled)
+- [ ] Check analytics tracking (if enabled)
+
 ---
 
 ### Other Deployment Options
@@ -331,6 +341,12 @@ Connect via Git integration
 - Add both success and failure redirect URLs in Appwrite
 - Ensure URLs match exactly (include trailing slashes if needed)
 - Check OAuth provider credentials
+
+**Vercel deployment issues:**
+- Build failing: Check build logs for missing dependencies
+- 404 on refresh: Ensure `vercel.json` rewrites are configured
+- Environment variables not working: Redeploy after adding env vars
+- CORS errors: Add your Vercel domain to Appwrite platform settings
 
 ---
 

@@ -29,8 +29,9 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import authService from "../../appwrite/auth";
 import { logout } from "../../store/authSlice";
+import { LogOut } from "lucide-react";
 
-function LogoutBtn() {
+function LogoutBtn({ className = "" }) {
   const dispatch = useDispatch();
   const logoutHandler = () => {
     authService.logout().then(() => {
@@ -40,9 +41,18 @@ function LogoutBtn() {
 
   return (
     <button
-      className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+      className={`
+        inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium 
+        text-white bg-destructive hover:bg-destructive/90
+        rounded-lg transition-all duration-200 
+        focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2
+        dark:focus:ring-offset-background
+        ${className}
+      `}
       onClick={logoutHandler}
+      aria-label="Logout"
     >
+      <LogOut className="w-4 h-4" />
       Logout
     </button>
   );

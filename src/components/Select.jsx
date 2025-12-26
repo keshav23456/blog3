@@ -44,7 +44,7 @@ const Select = React.forwardRef(({
       {label && (
         <label 
           htmlFor={id} 
-          className="block text-sm font-medium text-gray-700 ml-1"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-200 ml-1"
         >
           {label}
         </label>
@@ -54,14 +54,17 @@ const Select = React.forwardRef(({
         {...props}
         id={id}
         ref={ref}
+        dir="ltr"
+        style={{ direction: 'ltr', textAlign: 'left' }}
         className={`
           block w-full px-4 py-2.5
-          text-base text-gray-900
-          border border-gray-300 rounded-lg
-          bg-white bg-clip-padding
-          focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+          text-base text-gray-900 dark:text-gray-100
+          border border-gray-300 dark:border-gray-600 rounded-lg
+          bg-white dark:bg-gray-800/50 bg-clip-padding
+          focus:border-blue-500 dark:focus:border-purple-500 
+          focus:ring-2 focus:ring-blue-200 dark:focus:ring-purple-500/20
           transition-all duration-200
-          appearance-none
+          appearance-none cursor-pointer
           ${className}
         `}
       >
@@ -69,7 +72,7 @@ const Select = React.forwardRef(({
           <option 
             key={option} 
             value={option}
-            className="text-gray-700"
+            className="text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
           >
             {option}
           </option>
